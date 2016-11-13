@@ -8,7 +8,7 @@ FROM centos:6.8
 MAINTAINER XiaoLiang Hu <xlhuxa@cn.ibm.com>
 
 # set package name
-ENV LSF=lsfce10.1-x86_64.tar.gz PAC=pac10.1_basic_linux-x64.tar.Z PMPI=pmpi.tar.gz
+ENV LSF=lsfce10.1-x86_64.tar.gz PAC=pac10.1_basic_linux-x64.tar.Z PMPI=pmpi-09.01.02.00u.tar.gz
 
 # install required packages
 Run yum -q clean all \
