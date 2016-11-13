@@ -212,7 +212,7 @@ while true; do
     if test $(pgrep -f lim | wc -l) -eq 0
     then
         log_error "LIM process has exited due to a fatal error."
-        log_error `tail -n 20 $LSF_TOP/log/lim.log.*`
+        log_error `tail -n 20 $LSF_TOP/log/lim.log.$MYHOST`
         exit 1
     else
         log_info "LSF is running -:) ..."
