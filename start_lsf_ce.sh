@@ -69,6 +69,25 @@ function log_warn()
     log "WARN:" "$@"
 }
 
+function update_etc_hosts()
+{
+    # update etc/hosts file so that no "HOST_NOT_FOUND" issue
+    # raised by pmpi, since pmpi depends on 'gethostbyname' get
+    # ip/hostname mapping
+    (
+cat << EOF
+# Kubernetes-managed hosts file.
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+fe00::0 ip6-mcastprefix
+fe00::1 ip6-allnodes
+fe00::2 ip6-allrouters
+`cat $HOME_DIR/lsf/conf/hosts`
+EOF
+    ) > /etc/hosts
+}
+
 function init_database()
 {
     while true; do
@@ -208,6 +227,7 @@ generate_lock
 
 
 # hang here now
+UPDATE_TIME_1=`stat -c %Y $HOME_DIR/lsf/conf/hosts`
 while true; do
     if test $(pgrep -f lim | wc -l) -eq 0
     then
@@ -215,7 +235,12 @@ while true; do
         log_error `tail -n 20 $LSF_TOP/log/lim.log.$MYHOST`
         exit 1
     else
-        log_info "LSF is running -:) ..."
+        echo `date` "LSF is running -:) ..."
     fi
-    sleep 600
+    UPDATE_TIME_2=`stat -c %Y $HOME_DIR/lsf/conf/hosts`
+    if [ "$UPDATE_TIME_1" != "$UPDATE_TIME_2" ]; then
+        update_etc_hosts
+        UPDATE_TIME_1=UPDATE_TIME_2
+    fi
+    sleep 10
 done
