@@ -21,6 +21,7 @@ function init_share_dir()
     if [ "$ROLE" = "master" ]; then
         # delete duplicate host
         sed -i "/\b$MYHOST\b/d" $HOME_DIR/lsf/conf/hosts
+        UPDATE_TIME_1=`stat -c %Y $HOME_DIR/lsf/conf/hosts`
         cat /etc/hosts |grep $MYHOST >> $HOME_DIR/lsf/conf/hosts
         if [ ! -d $HOME_DIR/lsf/work/cluster1 ]; then
             cp -arp $LSF_TOP/conf/* $HOME_DIR/lsf/conf
@@ -45,6 +46,7 @@ function init_share_dir()
         # delete duplicate host
         sed -i "/\b`hostname -i`\b/d" $HOME_DIR/lsf/conf/hosts
         cat /etc/hosts |grep $MYHOST >> $HOME_DIR/lsf/conf/hosts
+        UPDATE_TIME_1=`stat -c %Y $HOME_DIR/lsf/conf/hosts`
         ln -s $HOME_DIR/lsf/conf/hosts $LSF_TOP/conf/hosts
     fi
 }
@@ -227,7 +229,6 @@ generate_lock
 
 
 # hang here now
-UPDATE_TIME_1=`stat -c %Y $HOME_DIR/lsf/conf/hosts`
 while true; do
     if test $(pgrep -f lim | wc -l) -eq 0
     then
