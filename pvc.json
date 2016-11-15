@@ -1,0 +1,17 @@
+{
+  "kind": "PersistentVolumeClaim",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "lsf"
+  },
+  "spec": {
+    "resources": {
+      "requests": {
+        "storage": "50Mi"
+      }
+    },
+    "accessModes": [
+      "ReadWriteMany"
+    ]
+  }
+}

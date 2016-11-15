@@ -1,0 +1,18 @@
+{
+  "kind": "PersistentVolume",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "lsf",
+    "labels": {}
+  },
+  "spec": {
+    "capacity": {
+      "storage": "50Mi"
+    },
+    "accessModes": [
+      "ReadWriteMany"
+    ],
+    "persistentVolumeReclaimPolicy": "Recycle",
+    "nfs": {"server": "9.111.250.200", "path": "/opt/sharedir/"}
+  }
+}

@@ -1,0 +1,108 @@
+    {
+        "apiVersion": "v1",
+        "kind": "Service",
+        "metadata": {
+            "name": "lsf-master",
+            "labels": {
+                "app": "lsf-master"
+            }
+        },
+        "spec": {
+            "ports": [
+                {
+                    "name": "pac",
+                    "protocol": "TCP",
+                    "port": 8080,
+                    "targetPort": 8080
+                }
+            ],
+            "type": "NodePort",
+            "selector": {
+                "app": "lsf-master"
+            }
+        }
+    }
+    {
+        "apiVersion": "extensions/v1beta1",
+        "kind": "Deployment",
+        "metadata": {
+            "name": "lsf-master",
+            "labels": {
+                "app": "lsf-master"
+            }
+        },
+        "spec": {
+            "replicas": 1,
+            "selector": {
+               "matchLabels": {
+                  "app": "lsf-master"
+               }
+            },
+            "template": {
+                "metadata": {
+                    "name": "lsf-master",
+                    "labels": {
+                        "app": "lsf-master"
+                    }
+                },
+                "spec": {
+                  "volumes": [
+                    {
+                        "persistentVolumeClaim": {
+                        "claimName": "lsf"
+                        },
+                        "name": "nfsvol"
+                    }
+                  ],
+                    "containers": [
+                        {
+                            "name": "lsf-master",
+                            "image": "lsf:10.1",
+                            "imagePullPolicy": "IfNotPresent",
+                            "securityContext": {
+                                "privileged": false 
+                            },
+                            "args": ["master", "passw0rd"],
+                            "volumeMounts": [
+                                {
+                                    "name": "nfsvol",
+                                    "mountPath": "/home/lsfadmin"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "mariadb",
+                            "image": "mariadb:5.5",
+                            "imagePullPolicy": "IfNotPresent",
+                            "securityContext": {
+                                "privileged": false 
+                            },
+                            "env": [
+                                {
+                                    "name": "MYSQL_ROOT_PASSWORD",
+                                    "value": "passw0rd"
+                                }
+                            ],
+                            "args": ["--datadir", "/home/lsfadmin/mariadb"],
+                            "volumeMounts": [
+                                {
+                                    "name": "nfsvol",
+                                    "mountPath": "/home/lsfadmin"
+                                }
+                            ]
+                        }
+                    ],
+                    "restartPolicy": "Always",
+                    "hostname": "lsf-master",
+                    "terminationGracePeriodSeconds": 30,
+                    "dnsPolicy": "ClusterFirst",
+                    "nodeSelector": {
+            "k8s.mesosphere.io/attribute-arch": "amd64",
+            "deploy_lsf": "true"
+            },
+                    "securityContext": {}
+                }
+            }
+        }
+    }
+
