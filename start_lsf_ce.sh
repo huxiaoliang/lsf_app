@@ -21,7 +21,6 @@ function init_share_dir()
     if [ "$ROLE" = "master" ]; then
         # delete duplicate host
         sed -i "/\b$MYHOST\b/d" $HOME_DIR/lsf/conf/hosts
-        UPDATE_TIME_1=`stat -c %Y $HOME_DIR/lsf/conf/hosts`
         cat /etc/hosts |grep $MYHOST >> $HOME_DIR/lsf/conf/hosts
         if [ ! -d $HOME_DIR/lsf/work/cluster1 ]; then
             cp -arp $LSF_TOP/conf/* $HOME_DIR/lsf/conf
@@ -46,7 +45,6 @@ function init_share_dir()
         # delete duplicate host
         sed -i "/\b`hostname -i`\b/d" $HOME_DIR/lsf/conf/hosts
         cat /etc/hosts |grep $MYHOST >> $HOME_DIR/lsf/conf/hosts
-        UPDATE_TIME_1=`stat -c %Y $HOME_DIR/lsf/conf/hosts`
         ln -s $HOME_DIR/lsf/conf/hosts $LSF_TOP/conf/hosts
     fi
 }
@@ -205,6 +203,7 @@ PAC_TOP="/opt/ibm/pac"
 LOGFILE="/tmp/start_lsf_ce_$MYHOST.log"
 LOCKFILE="$LSF_TOP/lsf_ce_$MYHOST.lock"
 DB_NAME="pac"
+ETC_HOSTS_UPDATE_TIME_1=0
 
 
 
@@ -238,10 +237,10 @@ while true; do
     else
         echo `date` "LSF is running -:) ..."
     fi
-    UPDATE_TIME_2=`stat -c %Y $HOME_DIR/lsf/conf/hosts`
-    if [ "$UPDATE_TIME_1" != "$UPDATE_TIME_2" ]; then
+    ETC_HOSTS_UPDATE_TIME_2=`stat -c %Y $HOME_DIR/lsf/conf/hosts`
+    if [ "$ETC_HOSTS_UPDATE_TIME_1" != "$ETC_HOSTS_UPDATE_TIME_2" ]; then
         update_etc_hosts
-        UPDATE_TIME_1=UPDATE_TIME_2
+        ETC_HOSTS_UPDATE_TIME_1=ETC_HOSTS_UPDATE_TIME_2
     fi
     sleep 10
 done
