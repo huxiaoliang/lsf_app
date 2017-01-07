@@ -10,28 +10,19 @@ MAINTAINER XiaoLiang Hu <xlhuxa@cn.ibm.com>
 # set package name
 ENV LSF=lsfce10.1-ppc64le.tar.gz PAC=pac10.1_basic_linux-ppc64le.tar.Z PMPI=pmpi-09.01.02.00u.tar.gz
 
-# Create repo
-
-RUN cd /etc/yum.repos.d \
-    && echo "" > CentOS-Base.repo \
-    && echo "[mylocalrepo]" >> CentOS-Base.repo \
-    && echo "name=Local CentOS Repo" >> CentOS-Base.repo \
-    && echo "baseurl=http://mirror.centos.org/altarch/7.2.1511/os/ppc64le" >> CentOS-Base.repo \
-    && echo "gpgcheck=0" >> CentOS-Base.repo \
-
 # install required packages
-    && yum -y -q install ed \
-                         tar \
-                         vi \
-                         initscripts \
-                         lsof \
-                         sysstat \
-                         gettext \
-                         mysql \
-                         openssh-server \
-                         openssh-clients \
-                         wget \
-                         mysql-connector-java \
+RUN  yum -y -q install ed \
+                       tar \
+                       vi \
+                       initscripts \
+                       lsof \
+                       sysstat \
+                       gettext \
+                       mysql \
+                       openssh-server \
+                       openssh-clients \
+                       wget \
+                       mysql-connector-java \
 
 # copy LSF packages
     && echo "down load LSF CE package..." \
