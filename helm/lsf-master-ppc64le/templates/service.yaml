@@ -1,0 +1,22 @@
+# This is a service gateway to the replica set created by the deployment.
+# Take a look at the deployment.yaml for general notes about this chart.
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Values.master.name }}"
+  labels:
+    # This makes it easy to search for all components of a release using kubectl
+    heritage: {{ .Release.Service | quote }}
+    # This makes it easy to audit chart usage.
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    release: {{.Release.Name | quote }}
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: "{{ .Values.master.name }}"
+  type: NodePort
+  selector:
+    app: "{{ .Values.master.name }}"

@@ -19,8 +19,6 @@ function init_share_dir()
     mkdir -p $HOME_DIR/mariadb
     mkdir -p $HOME_DIR/tools
     if [ "$ROLE" = "master" ]; then
-        # delete duplicate host
-        sed -i "/\b$MYHOST\b/d" $HOME_DIR/lsf/conf/hosts
         cat /etc/hosts |grep $MYHOST >> $HOME_DIR/lsf/conf/hosts
         if [ ! -d $HOME_DIR/lsf/work/cluster1 ]; then
             cp -arp $LSF_TOP/conf/* $HOME_DIR/lsf/conf
@@ -34,7 +32,6 @@ function init_share_dir()
         sed -i "s/$MYHOST/$LSF_MASTER_LIST/g" $LSF_TOP/conf/ego/cluster1/kernel/ego.conf
         sed -i "s/$MYHOST/$LSF_MASTER_LIST/g" $LSF_TOP/conf/lsf.conf
         while true; do
-             
             if [ ! -e $HOME_DIR/lsf/conf/hosts ];then
                 sleep 2
                 log_info "waiting for lsf master service startup ..."

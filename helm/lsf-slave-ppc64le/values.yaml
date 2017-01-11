@@ -1,0 +1,12 @@
+# Default values for lsf slave.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+slave:
+  name: lsf-slave
+  cpu: 200m
+  memory: 200Mi
+  replicas: 1
+  master: lsf-master
+  pvc: lsf

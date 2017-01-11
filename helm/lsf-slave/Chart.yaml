@@ -1,0 +1,14 @@
+name: lsf-slave
+description: LSF slave
+version: 10.1
+keywords:
+  - cluster
+  - job
+  - distributed
+home: "https://www.ibm.com/support/knowledgecenter/en/SS4RPL_4.2.2/docs_shared/bundled_lsfce.html"
+sources:
+  - "https://hub.docker.com/r/huxl/lsf/"
+maintainers:
+  - name: XiaoLiang Hu
+    email: xlhuxa@cn.ibm.com
+icon: http://platform.csdn.net/images/pro_02.gif

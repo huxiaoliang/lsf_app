@@ -1,0 +1,15 @@
+# Default values for lsf master.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+master:
+  name: lsf-master
+  cpu: 600m
+  memory: 2048Mi
+  pvc: lsf
+
+mariadb:
+  cpu: 120m
+  memory: 256Mi
+  password: passw0rd

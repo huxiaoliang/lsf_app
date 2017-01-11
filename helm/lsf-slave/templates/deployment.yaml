@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ .Values.slave.name }}"
+  labels:
+    # This makes it easy to search for all components of a release using kubectl.
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    # This makes it easy to audit chart usage.
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    app: "{{ .Values.slave.name }}"
+spec:
+  replicas: {{ .Values.slave.replicas }}
+  selector:
+    matchLabels: 
+      app: "{{ .Values.slave.name }}"
+  template:
+    metadata:
+      name: "{{ .Values.slave.name }}"
+      labels:
+        app: "{{ .Values.slave.name }}"
+        release: {{.Release.Name | quote }}
+    spec:
+      containers:
+      - name: "{{ .Values.slave.name }}"
+        image: huxl/lsf:10.1
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: {{ .Values.slave.cpu }}
+            memory: {{ .Values.slave.memory }}
+        securityContext:
+          privileged: false
+        args: ["slave", "-", "{{ .Values.slave.master }}"]
+        volumeMounts:
+        - mountPath: /home/lsfadmin
+          name: persistdir
+      volumes:
+        - name: persistdir
+          persistentVolumeClaim:
+            claimName: "{{ .Values.slave.pvc }}"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      nodeSelector:
+        k8s.mesosphere.io/attribute-arch: amd64
+        deploy_lsf: "true"
