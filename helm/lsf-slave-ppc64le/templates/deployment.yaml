@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: "{{ .Values.slave.name }}"
-        image: huxl/lsf:10.1
+        image: huxl/lsf-ppc64le:10.1
         imagePullPolicy: IfNotPresent
         resources:
           limits:
