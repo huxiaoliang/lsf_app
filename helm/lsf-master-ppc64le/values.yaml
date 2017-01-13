@@ -4,12 +4,17 @@
 # name: value
 
 master:
-  name: lsf-master
   cpu: 600m
   memory: 2048Mi
   pvc: lsf
+  image:
+    repository: ibmcom/lsf-ppc64le
+    tag: 10.1
 
 mariadb:
   cpu: 120m
   memory: 256Mi
   password: passw0rd
+  image:
+    repository: ibmcom/mariadb-ppc64le
+    tag: 10.1.16

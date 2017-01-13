@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ .Values.master.name }}"
+  name: "{{ .Release.Name }}"
   labels:
     # This makes it easy to search for all components of a release using kubectl
     heritage: {{ .Release.Service | quote }}
@@ -16,7 +16,7 @@ spec:
   - port: 8080
     targetPort: 8080
     protocol: TCP
-    name: "{{ .Values.master.name }}"
+    name: "{{ .Release.Name }}"
   type: NodePort
   selector:
-    app: "{{ .Values.master.name }}"
+    app: "{{ .Release.Name }}"

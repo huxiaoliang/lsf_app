@@ -7,8 +7,8 @@ FROM huxl/centos-ppc64le:7.2.1511
 
 MAINTAINER XiaoLiang Hu <xlhuxa@cn.ibm.com>
 
-# set package name
-ENV LSF=lsfce10.1-ppc64le.tar.gz PAC=pac10.1_basic_linux-ppc64le.tar.Z PMPI=pmpi-09.01.02.00u.tar.gz
+# set package name(PMPI is not supported on ppc64le)
+ENV LSF=lsfce10.1-ppc64le.tar.gz PAC=pac10.1_basic_linux-ppc64le.tar.Z
 
 # install required packages
 RUN  yum -y -q install ed \
@@ -17,6 +17,8 @@ RUN  yum -y -q install ed \
                        initscripts \
                        lsof \
                        sysstat \
+                       net-tools \
+                       which \
                        gettext \
                        mysql \
                        openssh-server \
@@ -52,6 +54,7 @@ RUN  yum -y -q install ed \
     && echo "SILENT_INSTALL=Y" >> install.config \
     && echo "LSF_SILENT_INSTALL_TARLIST=ALL" >> install.config \
     && echo "LSF_DYNAMIC_HOST_WAIT_TIME=1" >> install.config \
+    # disable https
     && echo "ENABLE_DYNAMIC_HOSTS=Y" >> install.config \
 
 # install LSF
@@ -71,17 +74,12 @@ RUN  yum -y -q install ed \
     && sed -i 's/4096/2048/g' pacinstall.sh \
     && export USER=`whoami` \
     && export USE_REMOTE_DB="Y" \
+    && export HTTP_MODE_FRESH_INSTALL="http" \
 
 # install PAC
     && echo "start install PAC..." \
     && ./pacinstall.sh -s -y \
     && echo "PAC installation has successfully completed." \
-
-# install MPI install
-    && echo "start install PMPI..." \
-    && cd /var/lsfce/ \
-    && tar zxf $PMPI -C /opt/ibm/ \
-    && echo "PMPI installation has successfully completed." \
 
 # clean up package
     && mv /var/lsfce/start_lsf_ce.sh / \

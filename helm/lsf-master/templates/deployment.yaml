@@ -1,29 +1,29 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ .Values.master.name }}"
+  name: "{{ .Release.Name }}"
   labels:
     # This makes it easy to search for all components of a release using kubectl
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     # This makes it easy to audit chart usage.
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    app: "{{ .Values.master.name }}"
+    app: "{{ .Release.Name }}"
 spec:
   replicas: 1
   selector:
     matchLabels: 
-      app: "{{ .Values.master.name }}"
+      app: "{{ .Release.Name }}"
   template:
     metadata:
-      name: "{{ .Values.master.name }}"
+      name: "{{ .Release.Name }}"
       labels:
-        app: "{{ .Values.master.name }}"
+        app: "{{ .Release.Name }}"
         release: {{.Release.Name | quote }}
     spec:
       containers:
-      - name: "{{ .Values.master.name }}"
-        image: "huxl/lsf:10.1"
+      - name: "{{ .Release.Name }}"
+        image: "{{.Values.master.image.repository}}:{{.Values.master.image.tag}}"
         imagePullPolicy: IfNotPresent
         resources:
           limits:
@@ -36,7 +36,7 @@ spec:
         - mountPath: /home/lsfadmin
           name: persistdir
       - name: mariadb
-        image: mariadb:5.5
+        image: "{{.Values.mariadb.image.repository}}:{{.Values.mariadb.image.tag}}"
         imagePullPolicy: IfNotPresent
         resources:
           limits:
@@ -56,7 +56,7 @@ spec:
           persistentVolumeClaim:
             claimName: "{{ .Values.master.pvc }}"
       restartPolicy: Always
-      hostname: "{{ .Values.master.name }}"
+      hostname: "{{ .Release.Name }}"
       terminationGracePeriodSeconds: 30
       nodeSelector:
         k8s.mesosphere.io/attribute-arch: amd64

@@ -1,29 +1,29 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ .Values.slave.name }}"
+  name: "{{ .Release.Name }}"
   labels:
     # This makes it easy to search for all components of a release using kubectl.
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     # This makes it easy to audit chart usage.
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    app: "{{ .Values.slave.name }}"
+    app: "{{ .Release.Name }}"
 spec:
   replicas: {{ .Values.slave.replicas }}
   selector:
     matchLabels: 
-      app: "{{ .Values.slave.name }}"
+      app: "{{ .Release.Name }}"
   template:
     metadata:
-      name: "{{ .Values.slave.name }}"
+      name: "{{ .Release.Name }}"
       labels:
-        app: "{{ .Values.slave.name }}"
+        app: "{{ .Release.Name }}"
         release: {{.Release.Name | quote }}
     spec:
       containers:
-      - name: "{{ .Values.slave.name }}"
-        image: huxl/lsf:10.1
+      - name: "{{ .Release.Name }}"
+        image: "{{.Values.slave.image.repository}}:{{.Values.slave.image.tag}}"
         imagePullPolicy: IfNotPresent
         resources:
           limits:
